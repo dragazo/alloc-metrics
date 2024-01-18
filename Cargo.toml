@@ -1,0 +1,16 @@
+[package]
+name = "alloc-metrics"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["thread", "global"]
+thread = ["std"]
+global = []
+std = []
+
+[dependencies]
+derive_more = { version = "0.99", default-features = false, features = ["add", "add_assign", "not"] }
+spin = { version = "0.9", default-features = false, features = ["spin_mutex", "mutex"] }
