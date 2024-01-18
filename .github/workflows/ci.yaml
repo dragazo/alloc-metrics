@@ -24,7 +24,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: doc
-          args: --no-deps --no-default-features --features ${{ matrix.thread }},${{ matrix.global }}
+          args: --no-deps --no-default-features --features ${{ matrix.thread }},${{ matrix.global }},
 
   test:
     name: test
@@ -44,7 +44,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --lib ${{ matrix.opt }} --no-default-features --features ${{ matrix.thread }},${{ matrix.global }}
+          args: --lib ${{ matrix.opt }} --no-default-features --features ${{ matrix.thread }},${{ matrix.global }},
 
   audit:
     name: audit
@@ -78,4 +78,4 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --lib ${{ matrix.opt }} --no-default-features --features ${{ matrix.global }} --target thumbv6m-none-eabi
+          args: --lib ${{ matrix.opt }} --no-default-features --features ${{ matrix.global }}, --target thumbv6m-none-eabi
