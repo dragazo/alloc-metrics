@@ -68,12 +68,34 @@ unsafe impl<A: GlobalAlloc> GlobalAlloc for MetricAlloc<A> {
         }
         res
     }
+    unsafe fn alloc_zeroed(&self, layout: core::alloc::Layout) -> *mut u8 {
+        let res = self.wrapped.alloc_zeroed(layout);
+        if !res.is_null() {
+            add_assign_metrics(Metrics {
+                allocated_bytes: layout.size() as isize,
+                allocations: 1,
+            });
+        }
+        res
+    }
     unsafe fn dealloc(&self, ptr: *mut u8, layout: core::alloc::Layout) {
         self.wrapped.dealloc(ptr, layout);
-        add_assign_metrics(Metrics {
-            allocated_bytes: -(layout.size() as isize),
-            allocations: -1,
-        });
+        if !ptr.is_null() {
+            add_assign_metrics(Metrics {
+                allocated_bytes: -(layout.size() as isize),
+                allocations: -1,
+            });
+        }
+    }
+    unsafe fn realloc(&self, ptr: *mut u8, layout: core::alloc::Layout, new_size: usize) -> *mut u8 {
+        let res = self.wrapped.realloc(ptr, layout, new_size);
+        if !res.is_null() {
+            add_assign_metrics(Metrics {
+                allocated_bytes: new_size as isize - layout.size() as isize,
+                allocations: 0,
+            })
+        }
+        res
     }
 }
 

@@ -46,6 +46,24 @@ jobs:
           command: test
           args: --lib ${{ matrix.opt }} --no-default-features --features ${{ matrix.thread }},${{ matrix.global }},
 
+  test-miri:
+    name: test-miri
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        opt: ["", "--release"]
+        thread: ["", "thread"]
+        global: ["", "global"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+      - run: rustup component add miri
+      - run: cargo miri test
+
   audit:
     name: audit
     runs-on: ubuntu-latest
